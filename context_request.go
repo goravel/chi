@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-rat/chix"
 	"github.com/go-rat/chix/binder"
 	"github.com/gookit/validate"
@@ -37,8 +38,7 @@ type ContextRequest struct {
 func NewContextRequest(ctx *Context, log log.Log, validation contractsvalidate.Validation) contractshttp.ContextRequest {
 	httpBody, err := getHttpBody(ctx)
 	if err != nil {
-		fmt.Println(err.Error())
-		//LogFacade.Error(fmt.Sprintf("%+v", errors.Unwrap(err)))
+		LogFacade.Error(fmt.Sprintf("%+v", errors.Unwrap(err)))
 	}
 
 	return &ContextRequest{ctx: ctx, bind: chix.NewBind(ctx.r), render: chix.NewRender(ctx.w, ctx.r), httpBody: httpBody, log: log, validation: validation}
@@ -63,9 +63,10 @@ func (r *ContextRequest) All() map[string]any {
 		queryMap[key] = strings.Join(query, ",")
 	}
 
-	for k := len(r.ctx.instance.URLParams.Keys) - 1; k >= 0; k-- {
-		key := r.ctx.instance.URLParams.Keys[k]
-		val := r.ctx.instance.URLParams.Values[k]
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	for k := len(chiCtx.URLParams.Keys) - 1; k >= 0; k-- {
+		key := chiCtx.URLParams.Keys[k]
+		val := chiCtx.URLParams.Values[k]
 		if key == "*" {
 			continue
 		}
@@ -194,7 +195,7 @@ func (r *ContextRequest) Method() string {
 }
 
 func (r *ContextRequest) Next() {
-	// TODO
+	// TODO how to implement this?
 }
 
 func (r *ContextRequest) Query(key string, defaultValue ...string) string {
@@ -214,8 +215,8 @@ func (r *ContextRequest) Query(key string, defaultValue ...string) string {
 }
 
 func (r *ContextRequest) QueryInt(key string, defaultValue ...int) int {
-	if val, err := strconv.Atoi(r.Query(key)); err == nil {
-		return val
+	if val := r.Query(key); val != "" {
+		return cast.ToInt(val)
 	}
 
 	if len(defaultValue) > 0 {
@@ -226,8 +227,8 @@ func (r *ContextRequest) QueryInt(key string, defaultValue ...int) int {
 }
 
 func (r *ContextRequest) QueryInt64(key string, defaultValue ...int64) int64 {
-	if val, err := strconv.Atoi(r.Query(key)); err == nil {
-		return int64(val)
+	if val := r.Query(key); val != "" {
+		return cast.ToInt64(val)
 	}
 
 	if len(defaultValue) > 0 {
@@ -305,7 +306,8 @@ func (r *ContextRequest) Input(key string, defaultValue ...string) string {
 		return r.Query(key)
 	}
 
-	value := r.ctx.instance.URLParam(key)
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	value := chiCtx.URLParam(key)
 	if len(value) == 0 && len(defaultValue) > 0 {
 		return defaultValue[0]
 	}
@@ -370,17 +372,20 @@ func (r *ContextRequest) Ip() string {
 }
 
 func (r *ContextRequest) Route(key string) string {
-	return r.ctx.instance.URLParam(key)
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	return chiCtx.URLParam(key)
 }
 
 func (r *ContextRequest) RouteInt(key string) int {
-	val := r.ctx.instance.URLParam(key)
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	val := chiCtx.URLParam(key)
 
 	return cast.ToInt(val)
 }
 
 func (r *ContextRequest) RouteInt64(key string) int64 {
-	val := r.ctx.instance.URLParam(key)
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	val := chiCtx.URLParam(key)
 
 	return cast.ToInt64(val)
 }
@@ -423,9 +428,10 @@ func (r *ContextRequest) Validate(rules map[string]string, options ...contractsv
 		}
 	}
 
-	for k := len(r.ctx.instance.URLParams.Keys) - 1; k >= 0; k-- {
-		key := r.ctx.instance.URLParams.Keys[k]
-		val := r.ctx.instance.URLParams.Values[k]
+	chiCtx := chi.RouteContext(r.ctx.r.Context())
+	for k := len(chiCtx.URLParams.Keys) - 1; k >= 0; k-- {
+		key := chiCtx.URLParams.Keys[k]
+		val := chiCtx.URLParams.Values[k]
 		if key == "*" {
 			continue
 		}

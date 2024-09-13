@@ -380,7 +380,7 @@ func TestNewRoute(t *testing.T) {
 			route, err := NewRoute(mockConfig, test.parameters)
 			assert.Equal(t, test.expectError, err)
 			if route != nil {
-				assert.Equal(t, test.expectHTMLRender, route.htmlRender)
+				assert.Equal(t, test.expectHTMLRender, route.instance.htmlRender)
 			}
 
 			mockConfig.AssertExpectations(t)

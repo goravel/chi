@@ -10,27 +10,27 @@ import (
 	httpcontract "github.com/goravel/framework/contracts/http"
 )
 
-func middlewaresToChiHandlers(middlewares []httpcontract.Middleware) []func(http.Handler) http.Handler {
+func middlewaresToChiHandlers(instance *Instance, middlewares []httpcontract.Middleware) []func(http.Handler) http.Handler {
 	var handlers []func(http.Handler) http.Handler
 	for _, item := range middlewares {
-		handlers = append(handlers, middlewareToChiHandler(item))
+		handlers = append(handlers, middlewareToChiHandler(instance, item))
 	}
 
 	return handlers
 }
 
-func handlerToChiHandler(handler httpcontract.HandlerFunc) http.HandlerFunc {
+func handlerToChiHandler(instance *Instance, handler httpcontract.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if response := handler(NewContext(w, copyRequest(r))); response != nil {
+		if response := handler(NewContext(instance, w, copyRequest(r))); response != nil {
 			_ = response.Render()
 		}
 	}
 }
 
-func middlewareToChiHandler(handler httpcontract.Middleware) func(http.Handler) http.Handler {
+func middlewareToChiHandler(instance *Instance, handler httpcontract.Middleware) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			handler(NewContext(w, copyRequest(r)))
+			handler(NewContext(instance, w, copyRequest(r)))
 			next.ServeHTTP(w, r)
 		})
 	}

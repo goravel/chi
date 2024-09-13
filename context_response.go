@@ -108,7 +108,7 @@ func (r *ContextResponse) Stream(code int, step func(w contractshttp.StreamWrite
 }
 
 func (r *ContextResponse) View() contractshttp.ResponseView {
-	return NewView(r.render)
+	return NewView(r.ctx.instance.htmlRender, r.Writer())
 }
 
 func (r *ContextResponse) WithoutCookie(name string) contractshttp.ContextResponse {

@@ -3,8 +3,9 @@ package facades
 import (
 	"log"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/goravel/framework/contracts/route"
+
+	"github.com/goravel/chi"
 )
 
 func Route(driver string) route.Route {

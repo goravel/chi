@@ -2,24 +2,26 @@ package chi
 
 import (
 	"fmt"
+	"html/template"
+	"net/http"
 	"reflect"
 
-	"github.com/go-rat/chix"
 	contractshttp "github.com/goravel/framework/contracts/http"
 )
 
 type View struct {
-	render *chix.Render
+	template *template.Template
+	w        http.ResponseWriter
 }
 
-func NewView(render *chix.Render) *View {
-	return &View{render: render}
+func NewView(template *template.Template, w http.ResponseWriter) *View {
+	return &View{template, w}
 }
 
 func (receive *View) Make(view string, data ...any) contractshttp.Response {
 	shared := ViewFacade.GetShared()
 	if len(data) == 0 {
-		return &HtmlResponse{shared, receive.render, view}
+		return &HtmlResponse{shared, view, receive.template, receive.w}
 	} else {
 		dataType := reflect.TypeOf(data[0])
 		switch dataType.Kind() {
@@ -29,11 +31,11 @@ func (receive *View) Make(view string, data ...any) contractshttp.Response {
 				shared[key] = value
 			}
 
-			return &HtmlResponse{shared, receive.render, view}
+			return &HtmlResponse{shared, view, receive.template, receive.w}
 		case reflect.Map:
 			fillShared(data[0], shared)
 
-			return &HtmlResponse{data[0], receive.render, view}
+			return &HtmlResponse{shared, view, receive.template, receive.w}
 		default:
 			panic(fmt.Sprintf("make %s view failed, data must be map or struct", view))
 		}

@@ -5,27 +5,24 @@ import (
 	nethttp "net/http"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/goravel/framework/contracts/http"
 )
 
 func Background() http.Context {
 	return &Context{
-		instance: chi.NewRouteContext(),
-		r:        &nethttp.Request{},
+		r: &nethttp.Request{},
 	}
 }
 
 type Context struct {
 	r        *nethttp.Request
 	w        nethttp.ResponseWriter
-	instance *chi.Context
+	instance *Instance
 	request  http.ContextRequest
 	response http.ContextResponse
 }
 
-func NewContext(w nethttp.ResponseWriter, r *nethttp.Request) http.Context {
-	instance := chi.RouteContext(r.Context())
+func NewContext(instance *Instance, w nethttp.ResponseWriter, r *nethttp.Request) http.Context {
 	return &Context{r: r, w: w, instance: instance}
 }
 
@@ -69,6 +66,6 @@ func (c *Context) Value(key any) any {
 	return c.r.Context().Value(key)
 }
 
-func (c *Context) Instance() *chi.Context {
+func (c *Context) Instance() *Instance {
 	return c.instance
 }

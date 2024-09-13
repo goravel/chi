@@ -17,14 +17,18 @@ import (
 	"github.com/savioxavier/termlink"
 )
 
+type Instance struct {
+	mux                *chi.Mux
+	htmlRender         *template.Template
+	maxMultipartMemory int64
+}
+
 type Route struct {
 	route.Router
-	config             config.Config
-	htmlRender         *template.Template
-	instance           *chi.Mux
-	maxMultipartMemory int64
-	server             *http.Server
-	tlsServer          *http.Server
+	config    config.Config
+	instance  *Instance
+	server    *http.Server
+	tlsServer *http.Server
 }
 
 func NewRoute(config config.Config, parameters map[string]any) (*Route, error) {
@@ -33,7 +37,7 @@ func NewRoute(config config.Config, parameters map[string]any) (*Route, error) {
 		mux.Use(debugLog)
 	}
 
-	htmlRender := new(template.Template)
+	htmlRender, _ := DefaultTemplate()
 	if driver, exist := parameters["driver"]; exist {
 		newHtmlRender, ok := config.Get("http.drivers." + driver.(string) + ".template").(*template.Template)
 		if ok {
@@ -51,28 +55,32 @@ func NewRoute(config config.Config, parameters map[string]any) (*Route, error) {
 		}
 	}
 
+	instance := &Instance{
+		mux:                mux,
+		htmlRender:         htmlRender,
+		maxMultipartMemory: int64(config.GetInt("http.drivers.chi.body_limit", 4096)) << 10,
+	}
+
 	return &Route{
 		Router: NewGroup(
 			config,
-			mux,
+			instance,
 			"",
 			[]httpcontract.Middleware{},
 			[]httpcontract.Middleware{ResponseMiddleware()},
 		),
-		config:             config,
-		htmlRender:         htmlRender,
-		instance:           mux,
-		maxMultipartMemory: int64(config.GetInt("http.drivers.chi.body_limit", 4096)) << 10,
+		config:   config,
+		instance: instance,
 	}, nil
 }
 
 func (r *Route) Fallback(handler httpcontract.HandlerFunc) {
-	r.instance.NotFound(handlerToChiHandler(handler))
+	r.instance.mux.NotFound(handlerToChiHandler(r.instance, handler))
 }
 
 func (r *Route) GlobalMiddleware(middlewares ...httpcontract.Middleware) {
 	middlewares = append(middlewares, Cors(), Tls())
-	r.instance.Use(middlewaresToChiHandlers(middlewares)...)
+	r.instance.mux.Use(middlewaresToChiHandlers(r.instance, middlewares)...)
 	r.Router = NewGroup(
 		r.config,
 		r.instance,
@@ -98,7 +106,7 @@ func (r *Route) Run(host ...string) error {
 
 	r.server = &http.Server{
 		Addr:           host[0],
-		Handler:        http.AllowQuerySemicolons(r.instance),
+		Handler:        http.AllowQuerySemicolons(r.instance.mux),
 		MaxHeaderBytes: r.config.GetInt("http.drivers.chi.header_limit", 4096) << 10,
 	}
 
@@ -139,7 +147,7 @@ func (r *Route) RunTLSWithCert(host, certFile, keyFile string) error {
 
 	r.tlsServer = &http.Server{
 		Addr:           host,
-		Handler:        http.AllowQuerySemicolons(r.instance),
+		Handler:        http.AllowQuerySemicolons(r.instance.mux),
 		MaxHeaderBytes: r.config.GetInt("http.drivers.chi.header_limit", 4096) << 10,
 	}
 
@@ -151,7 +159,7 @@ func (r *Route) RunTLSWithCert(host, certFile, keyFile string) error {
 }
 
 func (r *Route) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	r.instance.ServeHTTP(writer, request)
+	r.instance.mux.ServeHTTP(writer, request)
 }
 
 func (r *Route) Shutdown(ctx ...context.Context) error {
@@ -177,6 +185,6 @@ func (r *Route) outputRoutes() {
 			return nil
 		}
 
-		_ = chi.Walk(r.instance, walkFunc)
+		_ = chi.Walk(r.instance.mux, walkFunc)
 	}
 }

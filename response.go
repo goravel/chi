@@ -1,7 +1,9 @@
 package chi
 
 import (
+	"html/template"
 	"io"
+	"net/http"
 
 	"github.com/go-rat/chix"
 	contractshttp "github.com/goravel/framework/contracts/http"
@@ -104,16 +106,19 @@ func (r *StringResponse) Render() error {
 }
 
 type HtmlResponse struct {
-	data   any
-	render *chix.Render
-	view   string
+	data     any
+	view     string
+	template *template.Template
+	w        http.ResponseWriter
 }
 
 func (r *HtmlResponse) Render() error {
-	// TODO currently chix does not support html rendering
-	//r.render.HTML(http.StatusOK, r.view, r.data)
+	r.w.Header().Set("Content-Type", chix.MIMETextHTMLCharsetUTF8)
+	if r.view == "" {
+		return r.template.Execute(r.w, r.data)
+	}
 
-	return nil
+	return r.template.ExecuteTemplate(r.w, r.view, r.data)
 }
 
 type StreamResponse struct {
