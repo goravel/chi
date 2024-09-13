@@ -90,7 +90,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Post",
@@ -104,7 +104,7 @@ func TestGroup(t *testing.T) {
 			method:     "POST",
 			url:        "/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Put",
@@ -118,7 +118,7 @@ func TestGroup(t *testing.T) {
 			method:     "PUT",
 			url:        "/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Delete",
@@ -132,7 +132,7 @@ func TestGroup(t *testing.T) {
 			method:     "DELETE",
 			url:        "/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Options",
@@ -159,7 +159,7 @@ func TestGroup(t *testing.T) {
 			method:     "PATCH",
 			url:        "/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Any Get",
@@ -173,7 +173,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/any/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Any Post",
@@ -187,7 +187,7 @@ func TestGroup(t *testing.T) {
 			method:     "POST",
 			url:        "/any/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Any Put",
@@ -201,7 +201,7 @@ func TestGroup(t *testing.T) {
 			method:     "PUT",
 			url:        "/any/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Any Delete",
@@ -215,7 +215,7 @@ func TestGroup(t *testing.T) {
 			method:     "DELETE",
 			url:        "/any/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Any Patch",
@@ -229,7 +229,7 @@ func TestGroup(t *testing.T) {
 			method:     "PATCH",
 			url:        "/any/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Resource Index",
@@ -250,7 +250,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/resource",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"index\"}",
+			expectBody: "{\"action\":\"index\"}\n",
 		},
 		{
 			name: "Resource Show",
@@ -271,7 +271,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/resource/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"show\",\"id\":\"1\"}",
+			expectBody: "{\"action\":\"show\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Resource Store",
@@ -292,7 +292,7 @@ func TestGroup(t *testing.T) {
 			method:     "POST",
 			url:        "/resource",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"store\"}",
+			expectBody: "{\"action\":\"store\"}\n",
 		},
 		{
 			name: "Resource Update (PUT)",
@@ -313,7 +313,7 @@ func TestGroup(t *testing.T) {
 			method:     "PUT",
 			url:        "/resource/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"update\",\"id\":\"1\"}",
+			expectBody: "{\"action\":\"update\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Resource Update (PATCH)",
@@ -334,7 +334,7 @@ func TestGroup(t *testing.T) {
 			method:     "PATCH",
 			url:        "/resource/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"update\",\"id\":\"1\"}",
+			expectBody: "{\"action\":\"update\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Resource Destroy",
@@ -355,7 +355,7 @@ func TestGroup(t *testing.T) {
 			method:     "DELETE",
 			url:        "/resource/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"action\":\"destroy\",\"id\":\"1\"}",
+			expectBody: "{\"action\":\"destroy\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Static",
@@ -411,7 +411,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/middlewares/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"ctx\":\"Goravel\",\"ctx1\":\"Hello\",\"id\":\"1\"}",
+			expectBody: "{\"ctx\":\"Goravel\",\"ctx1\":\"Hello\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Multiple Prefix",
@@ -425,7 +425,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/prefix1/prefix2/input/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"id\":\"1\"}",
+			expectBody: "{\"id\":\"1\"}\n",
 		},
 		{
 			name: "Multiple Prefix Group Middleware",
@@ -452,7 +452,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/group1/group2/middleware/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"ctx\":\"Goravel\",\"ctx1\":\"Hello\",\"id\":\"1\"}",
+			expectBody: "{\"ctx\":\"Goravel\",\"ctx1\":\"Hello\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Multiple Group Middleware",
@@ -479,7 +479,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/group1/middleware/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"ctx\":\"Goravel\",\"ctx2\":\"World\",\"id\":\"1\"}",
+			expectBody: "{\"ctx\":\"Goravel\",\"ctx2\":\"World\",\"id\":\"1\"}\n",
 		},
 		{
 			name: "Global Middleware",
@@ -503,7 +503,7 @@ func TestGroup(t *testing.T) {
 			method:     "GET",
 			url:        "/global-middleware",
 			expectCode: http.StatusOK,
-			expectBody: "{\"global\":\"goravel\"}",
+			expectBody: "{\"global\":\"goravel\"}\n",
 		},
 		{
 			name: "Middleware Conflict",
@@ -528,7 +528,7 @@ func TestGroup(t *testing.T) {
 			method:     "POST",
 			url:        "/conflict/middleware2/1",
 			expectCode: http.StatusOK,
-			expectBody: "{\"ctx\":null,\"ctx2\":\"World\",\"id\":\"1\"}",
+			expectBody: "{\"ctx\":null,\"ctx2\":\"World\",\"id\":\"1\"}\n",
 		},
 	}
 	for _, test := range tests {

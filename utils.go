@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/goravel/framework/contracts/config"
@@ -21,7 +22,7 @@ func middlewaresToChiHandlers(instance *Instance, middlewares []httpcontract.Mid
 
 func handlerToChiHandler(instance *Instance, handler httpcontract.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if response := handler(NewContext(instance, w, copyRequest(r))); response != nil {
+		if response := handler(NewContext(instance, w, r)); response != nil {
 			_ = response.Render()
 		}
 	}
@@ -30,7 +31,7 @@ func handlerToChiHandler(instance *Instance, handler httpcontract.HandlerFunc) h
 func middlewareToChiHandler(instance *Instance, handler httpcontract.Middleware) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			handler(NewContext(instance, w, copyRequest(r)))
+			handler(NewContext(instance, w, r))
 			next.ServeHTTP(w, r)
 		})
 	}
@@ -55,4 +56,10 @@ func copyRequest(r *http.Request) *http.Request {
 	}
 
 	return newRequest
+}
+
+func mergeSlashForPath(path string) string {
+	path = strings.ReplaceAll(path, "//", "/")
+
+	return strings.ReplaceAll(path, "//", "/")
 }

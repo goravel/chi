@@ -17,8 +17,8 @@ type DataResponse struct {
 }
 
 func (r *DataResponse) Render() error {
-	// TODO currently chix does not support setting content type
 	r.render.Status(r.code)
+	r.render.ContentType(r.contentType)
 	r.render.Data(r.data)
 
 	return nil
@@ -78,8 +78,11 @@ type RedirectResponse struct {
 }
 
 func (r *RedirectResponse) Render() error {
-	// TODO currently chix does not support setting status code
-	r.render.Redirect(r.location)
+	if r.code == http.StatusMovedPermanently {
+		r.render.RedirectPermanent(r.location)
+	} else {
+		r.render.Redirect(r.location)
+	}
 
 	return nil
 }

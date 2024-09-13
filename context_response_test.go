@@ -167,15 +167,22 @@ func (s *ContextResponseSuite) TestOrigin() {
 }
 
 func (s *ContextResponseSuite) TestRedirect() {
-	// TODO test Found and Moved Permanently
 	s.route.Get("/redirect", func(ctx contractshttp.Context) contractshttp.Response {
 		return ctx.Response().Redirect(http.StatusFound, "https://goravel.dev")
+	})
+	s.route.Get("/redirect2", func(ctx contractshttp.Context) contractshttp.Response {
+		return ctx.Response().Redirect(http.StatusMovedPermanently, "https://goravel.dev")
 	})
 
 	code, body, _, _ := s.request("GET", "/redirect", nil)
 
 	s.Equal("<a href=\"https://goravel.dev\">Found</a>.\n\n", body)
 	s.Equal(http.StatusFound, code)
+
+	code, body, _, _ = s.request("GET", "/redirect2", nil)
+
+	s.Equal("<a href=\"https://goravel.dev\">Moved Permanently</a>.\n\n", body)
+	s.Equal(http.StatusMovedPermanently, code)
 }
 
 // TODO fix
