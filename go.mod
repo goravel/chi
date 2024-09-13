@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/go-chi/chi/v5 v5.1.0
-	github.com/go-rat/chix v1.1.1
+	github.com/go-rat/chix v1.1.2
 	github.com/gookit/validate v1.5.2
 	github.com/goravel/framework v1.14.1-0.20240913020832-551f30f25260
 	github.com/rs/cors v1.11.1

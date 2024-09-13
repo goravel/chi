@@ -121,7 +121,9 @@ func (r *ContextRequest) Form(key string, defaultValue ...string) string {
 }
 
 func (r *ContextRequest) File(name string) (contractsfilesystem.File, error) {
-	// TODO support setting memory limit
+	if err := r.ctx.r.ParseMultipartForm(r.ctx.instance.maxMultipartMemory); err != nil {
+		return nil, err
+	}
 	f, fh, err := r.ctx.r.FormFile(name)
 	if err != nil {
 		return nil, err
@@ -251,6 +253,7 @@ func (r *ContextRequest) QueryBool(key string, defaultValue ...bool) bool {
 }
 
 func (r *ContextRequest) QueryArray(key string) []string {
+	// TODO optimize performance
 	queries := make(map[string][]string)
 	if err := r.bind.Query(&queries); err == nil {
 		if value, exist := queries[key]; exist {
@@ -262,8 +265,23 @@ func (r *ContextRequest) QueryArray(key string) []string {
 }
 
 func (r *ContextRequest) QueryMap(key string) map[string]string {
-	// TODo currently chix not support map query
-	return nil
+	// TODO optimize performance
+	queries := make(map[string][]string)
+	if err := r.bind.Query(&queries); err != nil {
+		return nil
+	}
+
+	// The bind.Query() method will bind query foo[bar]=baz to map["foo.bar"] = baz
+	key = key + "."
+	data := make(map[string]string)
+	for k, v := range queries {
+		if strings.HasPrefix(k, key) {
+			k = strings.TrimPrefix(k, key)
+			data[k] = strings.Join(v, ",")
+		}
+	}
+
+	return data
 }
 
 func (r *ContextRequest) Queries() map[string]string {
