@@ -22,7 +22,8 @@ func middlewaresToChiHandlers(instance *Instance, middlewares []httpcontract.Mid
 
 func handlerToChiHandler(instance *Instance, handler httpcontract.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if response := handler(NewContext(instance, w, r)); response != nil {
+		// TODO if not copy request, the request body will be empty in the next handler?
+		if response := handler(NewContext(instance, w, copyRequest(r))); response != nil {
 			_ = response.Render()
 		}
 	}
@@ -31,7 +32,8 @@ func handlerToChiHandler(instance *Instance, handler httpcontract.HandlerFunc) h
 func middlewareToChiHandler(instance *Instance, handler httpcontract.Middleware) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			handler(NewContext(instance, w, r))
+			// TODO if not copy request, the request body will be empty in the next middleware?
+			handler(NewContext(instance, w, copyRequest(r)))
 			next.ServeHTTP(w, r)
 		})
 	}

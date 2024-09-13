@@ -37,6 +37,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -60,7 +64,7 @@ func TestCors(t *testing.T) {
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
-				assert.Equal(t, http.StatusNotFound, resp.Code)
+				assert.Equal(t, http.StatusMethodNotAllowed, resp.Code)
 				assert.Equal(t, "", resp.Header().Get("Access-Control-Allow-Methods"))
 				assert.Equal(t, "", resp.Header().Get("Access-Control-Allow-Origin"))
 				assert.Equal(t, "", resp.Header().Get("Access-Control-Allow-Headers"))
@@ -79,6 +83,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -101,6 +109,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -123,6 +135,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -145,6 +161,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -167,6 +187,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"*"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {
@@ -189,6 +213,10 @@ func TestCors(t *testing.T) {
 				mockConfig.On("Get", "cors.exposed_headers").Return([]string{"Goravel"}).Once()
 				mockConfig.On("GetInt", "cors.max_age").Return(0).Once()
 				mockConfig.On("GetBool", "cors.supports_credentials").Return(false).Once()
+				mockConfig.On("GetString", "http.tls.host").Return("").Once()
+				mockConfig.On("GetString", "http.tls.port").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.cert").Return("").Once()
+				mockConfig.On("GetString", "http.tls.ssl.key").Return("").Once()
 				ConfigFacade = mockConfig
 			},
 			assert: func() {

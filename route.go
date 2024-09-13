@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/goravel/framework/contracts/config"
 	httpcontract "github.com/goravel/framework/contracts/http"
 	"github.com/goravel/framework/contracts/route"
@@ -80,6 +81,7 @@ func (r *Route) Fallback(handler httpcontract.HandlerFunc) {
 
 func (r *Route) GlobalMiddleware(middlewares ...httpcontract.Middleware) {
 	middlewares = append(middlewares, Cors(), Tls())
+	r.instance.mux.Use(middleware.Recoverer, middleware.CleanPath, middleware.StripSlashes)
 	r.instance.mux.Use(middlewaresToChiHandlers(r.instance, middlewares)...)
 	r.Router = NewGroup(
 		r.config,
